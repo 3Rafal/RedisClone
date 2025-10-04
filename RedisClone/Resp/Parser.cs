@@ -1,11 +1,10 @@
-using System.Net.Sockets;
 using System.Text;
 
 namespace RedisClone.Resp;
 
-public class Parser(NetworkStream stream)
+public class Parser(Stream stream)
 {
-    private readonly StreamReader _reader = new StreamReader(stream, Encoding.UTF8, leaveOpen: true);
+    private readonly StreamReader _reader = new(stream, Encoding.UTF8, leaveOpen: true);
 
     public async Task<object?> ReadAsync()
     {
