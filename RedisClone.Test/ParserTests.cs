@@ -196,14 +196,20 @@ public class ParserTests
         Assert.Null(result);
     }
 
-    [Fact]
-    public async Task UnknownType_ThrowsException()
+    [Theory]
+    [InlineData("@invalid\r\n", "@", "0x40")]
+    [InlineData("%invalid\r\n", "%", "0x25")]
+    [InlineData("&invalid\r\n", "&", "0x26")]
+    [InlineData("!invalid\r\n", "!", "0x21")]
+    [InlineData("~invalid\r\n", "~", "0x7E")]
+    public async Task UnknownType_ThrowsException_WithCorrectMessage(string data, string expectedChar, string expectedHex)
     {
         // Arrange
-        var parser = CreateParserFromString("?invalid\r\n");
+        var parser = CreateParserFromString(data);
 
         // Act & Assert
-        await Assert.ThrowsAsync<Exception>(parser.ReadAsync);
+        var exception = await Assert.ThrowsAsync<Exception>(parser.ReadAsync);
+        Assert.Equal($"Unknown RESP type: '{expectedChar}' ({expectedHex})", exception.Message);
     }
 
     [Fact]

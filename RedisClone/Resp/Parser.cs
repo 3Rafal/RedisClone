@@ -8,7 +8,7 @@ public class Parser(Stream stream)
 
     public async Task<object?> ReadAsync()
     {
-        int prefix = _reader.Peek();
+        int prefix = _reader.Read();
         if (prefix == -1) return null;
 
         return (char)prefix switch
@@ -18,32 +18,28 @@ public class Parser(Stream stream)
             ':' => await ReadIntegerAsync(),
             '$' => await ReadBulkStringAsync(),
             '*' => await ReadArrayAsync(),
-            _ => throw new Exception("Unknown RESP type"),
+            _ => throw new Exception($"Unknown RESP type: '{(char)prefix}' (0x{prefix:X2})"),
         };
     }
 
     private async Task<string> ReadSimpleStringAsync()
     {
-        await _reader.ReadAsync(new char[1], 0, 1); // consume '+'
         return await _reader.ReadLineAsync() ?? "";
     }
 
     private async Task<string> ReadErrorAsync()
     {
-        await _reader.ReadAsync(new char[1], 0, 1); // consume '-'
         return await _reader.ReadLineAsync() ?? "";
     }
 
     private async Task<long> ReadIntegerAsync()
     {
-        await _reader.ReadAsync(new char[1], 0, 1); // consume ':'
         string line = await _reader.ReadLineAsync() ?? "0";
         return long.Parse(line);
     }
 
     private async Task<string?> ReadBulkStringAsync()
     {
-        await _reader.ReadAsync(new char[1], 0, 1); // consume '$'
         int length = int.Parse(await _reader.ReadLineAsync() ?? "-1");
         if (length == -1) return null;
 
@@ -55,7 +51,6 @@ public class Parser(Stream stream)
 
     private async Task<object[]> ReadArrayAsync()
     {
-        await _reader.ReadAsync(new char[1], 0, 1); // consume '*'
         int length = int.Parse(await _reader.ReadLineAsync() ?? "0");
         var result = new object[length];
         for (int i = 0; i < length; i++)
