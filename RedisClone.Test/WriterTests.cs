@@ -19,7 +19,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteSimpleStringAsync(stream, "OK");
+        await Writer.SimpleStringAsync(stream, "OK");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -33,7 +33,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteSimpleStringAsync(stream, "");
+        await Writer.SimpleStringAsync(stream, "");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -47,7 +47,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteSimpleStringAsync(stream, "Hello World");
+        await Writer.SimpleStringAsync(stream, "Hello World");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -61,7 +61,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteSimpleStringAsync(stream, "Hello\x00World!\n");
+        await Writer.SimpleStringAsync(stream, "Hello\x00World!\n");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -75,7 +75,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteErrorAsync(stream, "Error message");
+        await Writer.ErrorAsync(stream, "Error message");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -89,7 +89,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteErrorAsync(stream, "");
+        await Writer.ErrorAsync(stream, "");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -103,7 +103,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteErrorAsync(stream, "ERR unknown command");
+        await Writer.ErrorAsync(stream, "ERR unknown command");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -117,7 +117,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteIntegerAsync(stream, 12345L);
+        await Writer.IntegerAsync(stream, 12345L);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -131,7 +131,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteIntegerAsync(stream, -12345L);
+        await Writer.IntegerAsync(stream, -12345L);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -145,7 +145,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteIntegerAsync(stream, 0L);
+        await Writer.IntegerAsync(stream, 0L);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -159,7 +159,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteIntegerAsync(stream, long.MaxValue);
+        await Writer.IntegerAsync(stream, long.MaxValue);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -173,7 +173,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteIntegerAsync(stream, long.MinValue);
+        await Writer.IntegerAsync(stream, long.MinValue);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -187,7 +187,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteBulkStringAsync(stream, "hello");
+        await Writer.BulkStringAsync(stream, "hello");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -202,7 +202,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteBulkStringAsync(stream, "");
+        await Writer.BulkStringAsync(stream, "");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -216,7 +216,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteBulkStringAsync(stream, null);
+        await Writer.BulkStringAsync(stream, null);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -230,7 +230,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteBulkStringAsync(stream, "Hello\x00World!");
+        await Writer.BulkStringAsync(stream, "Hello\x00World!");
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -245,7 +245,7 @@ public class WriterTests
         var longString = new string('a', 1000);
 
         // Act
-        await Writer.WriteBulkStringAsync(stream, longString);
+        await Writer.BulkStringAsync(stream, longString);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -259,7 +259,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, []);
+        await Writer.ArrayAsync(stream, []);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -273,7 +273,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, [null, null]);
+        await Writer.ArrayAsync(stream, [null, null]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -287,7 +287,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, ["hello", "world"]);
+        await Writer.ArrayAsync(stream, ["hello", "world"]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -301,7 +301,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, [42, -123, 0]);
+        await Writer.ArrayAsync(stream, [42, -123, 0]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -315,7 +315,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, ["hello", 42, null, "world"]);
+        await Writer.ArrayAsync(stream, ["hello", 42, null, "world"]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -329,7 +329,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, ["hello", new object[] { "inner", 42 }]);
+        await Writer.ArrayAsync(stream, ["hello", new object[] { "inner", 42 }]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -343,7 +343,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, [new object[] { "level2", new object[] { "level3" } }]);
+        await Writer.ArrayAsync(stream, [new object[] { "level2", new object[] { "level3" } }]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -357,7 +357,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, ["", "hello", ""]);
+        await Writer.ArrayAsync(stream, ["", "hello", ""]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -371,7 +371,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, ["Hello\x00World!", "\n\t\r"]);
+        await Writer.ArrayAsync(stream, ["Hello\x00World!", "\n\t\r"]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -385,7 +385,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, [int.MaxValue, long.MinValue, 0]);
+        await Writer.ArrayAsync(stream, [int.MaxValue, long.MinValue, 0]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -400,7 +400,7 @@ public class WriterTests
 
         // Act & Assert
         await Assert.ThrowsAsync<NotSupportedException>(
-            () => Writer.WriteArrayAsync(stream, [3.14f]));
+            () => Writer.ArrayAsync(stream, [3.14f]));
     }
 
     [Fact]
@@ -411,7 +411,7 @@ public class WriterTests
 
         // Act & Assert
         await Assert.ThrowsAsync<NotSupportedException>(
-            () => Writer.WriteArrayAsync(stream, ["hello", 3.14f, "world"]));
+            () => Writer.ArrayAsync(stream, ["hello", 3.14f, "world"]));
     }
 
     [Fact]
@@ -422,7 +422,7 @@ public class WriterTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<NotSupportedException>(
-            () => Writer.WriteArrayAsync(stream, [true]));
+            () => Writer.ArrayAsync(stream, [true]));
 
         Assert.Contains("RESP array cannot serialize object of type Boolean", exception.Message);
     }
@@ -435,7 +435,7 @@ public class WriterTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<NotSupportedException>(
-            () => Writer.WriteArrayAsync(stream, [3.14d]));
+            () => Writer.ArrayAsync(stream, [3.14d]));
 
         Assert.Contains("RESP array cannot serialize object of type Double", exception.Message);
     }
@@ -448,7 +448,7 @@ public class WriterTests
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<NotSupportedException>(
-            () => Writer.WriteArrayAsync(stream, ['c']));
+            () => Writer.ArrayAsync(stream, ['c']));
 
         Assert.Contains("RESP array cannot serialize object of type Char", exception.Message);
     }
@@ -461,7 +461,7 @@ public class WriterTests
         var largeArray = Enumerable.Range(1, 100).Select(i => $"item{i}").ToArray();
 
         // Act
-        await Writer.WriteArrayAsync(stream, largeArray);
+        await Writer.ArrayAsync(stream, largeArray);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -480,7 +480,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, [1, 2, 3]);
+        await Writer.ArrayAsync(stream, [1, 2, 3]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -494,10 +494,10 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteSimpleStringAsync(stream, "OK");
-        await Writer.WriteIntegerAsync(stream, 42);
-        await Writer.WriteBulkStringAsync(stream, "test");
-        await Writer.WriteArrayAsync(stream, ["a", "b"]);
+        await Writer.SimpleStringAsync(stream, "OK");
+        await Writer.IntegerAsync(stream, 42);
+        await Writer.BulkStringAsync(stream, "test");
+        await Writer.ArrayAsync(stream, ["a", "b"]);
 
         // Assert
         var content = await GetStreamContent(stream);

@@ -39,20 +39,20 @@ public class Server(string host, int port)
                     switch (command)
                     {
                         case "PING":
-                            await Writer.WriteSimpleStringAsync(stream, "PONG");
+                            await Writer.SimpleStringAsync(stream, "PONG");
                             break;
                         case "SET":
                             _store.Set(array[1].ToString()!, array[2].ToString()!);
-                            await Writer.WriteSimpleStringAsync(stream, "OK");
+                            await Writer.SimpleStringAsync(stream, "OK");
                             break;
                         case "GET":
                             if (_store.TryGet(array[1].ToString()!, out var value))
-                                await Writer.WriteBulkStringAsync(stream, value);
+                                await Writer.BulkStringAsync(stream, value);
                             else
-                                await Writer.WriteBulkStringAsync(stream, null);
+                                await Writer.BulkStringAsync(stream, null);
                             break;
                         default:
-                            await Writer.WriteErrorAsync(stream, $"Unknown command {command}");
+                            await Writer.ErrorAsync(stream, $"Unknown command {command}");
                             break;
                     }
                 }

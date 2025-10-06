@@ -4,24 +4,24 @@ namespace RedisClone.Resp;
 
 public class Writer
 {
-    public static async Task WriteSimpleStringAsync(Stream stream, string message)
-    => await WriteBytes(stream, $"+{message}\r\n");
+    public static async Task SimpleStringAsync(Stream stream, string message)
+    => await Bytes(stream, $"+{message}\r\n");
 
-    public static async Task WriteErrorAsync(Stream stream, string message)
-    => await WriteBytes(stream, $"-{message}\r\n");
+    public static async Task ErrorAsync(Stream stream, string message)
+    => await Bytes(stream, $"-{message}\r\n");
 
 
-    public static async Task WriteIntegerAsync(Stream stream, long value)
-    => await WriteBytes(stream, $":{value}\r\n");
+    public static async Task IntegerAsync(Stream stream, long value)
+    => await Bytes(stream, $":{value}\r\n");
 
-    public static async Task WriteBulkStringAsync(Stream stream, string? value)
+    public static async Task BulkStringAsync(Stream stream, string? value)
     {
         var message = value == null ?
             "-1\r\n" : $"${value.Length}\r\n{value}";
-        await WriteBytes(stream, message);
+        await Bytes(stream, message);
     }
 
-    public static async Task WriteArrayAsync(Stream stream, object?[] items)
+    public static async Task ArrayAsync(Stream stream, object?[] items)
     {
         await stream.WriteAsync(Encoding.UTF8.GetBytes($"*{items.Length}\r\n"));
 
@@ -30,17 +30,17 @@ public class Writer
             switch (item)
             {
                 case null:
-                    await WriteBulkStringAsync(stream, null);
+                    await BulkStringAsync(stream, null);
                     break;
                 case string s:
-                    await WriteBulkStringAsync(stream, s);
+                    await BulkStringAsync(stream, s);
                     break;
                 case int i:
                 case long l:
-                    await WriteIntegerAsync(stream, Convert.ToInt64(item));
+                    await IntegerAsync(stream, Convert.ToInt64(item));
                     break;
                 case object[] objArr:
-                    await WriteArrayAsync(stream, objArr);
+                    await ArrayAsync(stream, objArr);
                     break;
                 default:
                     throw new NotSupportedException(
@@ -49,7 +49,7 @@ public class Writer
         }
     }
 
-    private static async Task WriteBytes(Stream stream, string message)
+    private static async Task Bytes(Stream stream, string message)
     {
         byte[] data = Encoding.UTF8.GetBytes(message);
         await stream.WriteAsync(data);
