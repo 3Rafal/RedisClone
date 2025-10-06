@@ -47,4 +47,63 @@ public class KeyValueStore
 
         return removed;
     }
+
+    public long Exists(IEnumerable<string> keys)
+    {
+        long count = 0;
+        foreach (var k in keys)
+            if (TryGet(k, out _)) count++;
+
+        return count;
+    }
+
+    // TODO: NX | XX | GT | LT
+    public long Expire(string key, long seconds)
+    {
+        if (!_map.TryGetValue(key, out var entry)) return 0;
+
+        if (entry.ExpireAtMs is long ts && ts <= NowMs)
+        {
+            _map.TryRemove(key, out _);
+            return 0;
+        }
+
+        entry.ExpireAtMs = NowMs + seconds * 1000;
+        return 1;
+    }
+
+    public long Persist(string key)
+    {
+        if (!_map.TryGetValue(key, out var entry)) return 0;
+
+        if (entry.ExpireAtMs is null) return 0;
+
+        entry.ExpireAtMs = null;
+        return 1;
+    }
+
+    public long Ttl(string key)
+    {
+        if (!_map.TryGetValue(key, out var entry)) return -2;
+        if (entry.ExpireAtMs is null) return -1;
+
+        long msLeft = entry.ExpireAtMs.Value - NowMs;
+        if (msLeft <= 0)
+        {
+            _map.TryRemove(key, out _);
+            return -2;
+        }
+
+        return (long)Math.Ceiling(msLeft / 1000.0);
+    }
+
+    public void PurgeExpiredNow()
+    {
+        foreach (var kv in _map)
+        {
+            var e = kv.Value;
+            if (e.ExpireAtMs is long ts && ts <= NowMs)
+                _map.TryRemove(kv.Key, out _);
+        }
+    }
 }
