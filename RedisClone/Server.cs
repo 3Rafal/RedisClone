@@ -7,7 +7,7 @@ namespace RedisClone;
 public class Server(string host, int port)
 {
     private readonly TcpListener _listener = new TcpListener(IPAddress.Parse(host), port);
-    private readonly Dictionary<string, string> _store = new();
+    private readonly KeyValueStore _store = new();
 
     public async Task StartAsync()
     {
@@ -42,11 +42,11 @@ public class Server(string host, int port)
                             await Writer.WriteSimpleStringAsync(stream, "PONG");
                             break;
                         case "SET":
-                            _store[array[1].ToString()!] = array[2].ToString()!;
+                            _store.Set(array[1].ToString()!, array[2].ToString()!);
                             await Writer.WriteSimpleStringAsync(stream, "OK");
                             break;
                         case "GET":
-                            if (_store.TryGetValue(array[1].ToString()!, out var value))
+                            if (_store.TryGet(array[1].ToString()!, out var value))
                                 await Writer.WriteBulkStringAsync(stream, value);
                             else
                                 await Writer.WriteBulkStringAsync(stream, null);

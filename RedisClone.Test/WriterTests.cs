@@ -273,7 +273,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, new object?[] { null, null });
+        await Writer.WriteArrayAsync(stream, [null, null]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -287,7 +287,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, new object[] { "hello", "world" });
+        await Writer.WriteArrayAsync(stream, ["hello", "world"]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -329,7 +329,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, new object[] { "hello", new object[] { "inner", 42 } });
+        await Writer.WriteArrayAsync(stream, ["hello", new object[] { "inner", 42 }]);
 
         // Assert
         var content = await GetStreamContent(stream);
@@ -343,7 +343,7 @@ public class WriterTests
         var stream = new MemoryStream();
 
         // Act
-        await Writer.WriteArrayAsync(stream, new object[] { new object[] { "level2", new object[] { "level3" } } });
+        await Writer.WriteArrayAsync(stream, [new object[] { "level2", new object[] { "level3" } }]);
 
         // Assert
         var content = await GetStreamContent(stream);

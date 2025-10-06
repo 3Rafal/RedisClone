@@ -21,7 +21,7 @@ public class Writer
         await WriteBytes(stream, message);
     }
 
-    public static async Task WriteArrayAsync(Stream stream, object[] items)
+    public static async Task WriteArrayAsync(Stream stream, object?[] items)
     {
         await stream.WriteAsync(Encoding.UTF8.GetBytes($"*{items.Length}\r\n"));
 
