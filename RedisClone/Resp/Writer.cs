@@ -17,7 +17,7 @@ public class Writer
     public static async Task BulkStringAsync(Stream stream, string? value)
     {
         var message = value == null ?
-            "-1\r\n" : $"${value.Length}\r\n{value}";
+            "-1\r\n" : $"${value.Length}\r\n{value}\r\n";
         await Bytes(stream, message);
     }
 

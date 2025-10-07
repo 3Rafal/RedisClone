@@ -191,8 +191,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        // Note: Current implementation has a bug - missing \r\n at the end
-        Assert.Equal("$5\r\nhello", content);
+        Assert.Equal("$5\r\nhello\r\n", content);
     }
 
     [Fact]
@@ -206,7 +205,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("$0\r\n", content);
+        Assert.Equal("$0\r\n\r\n", content);
     }
 
     [Fact]
@@ -234,7 +233,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("$12\r\nHello\0World!", content);
+        Assert.Equal("$12\r\nHello\0World!\r\n", content);
     }
 
     [Fact]
@@ -249,7 +248,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal($"$1000\r\n{longString}", content);
+        Assert.Equal($"$1000\r\n{longString}\r\n", content);
     }
 
     [Fact]
@@ -291,7 +290,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("*2\r\n$5\r\nhello$5\r\nworld", content);
+        Assert.Equal("*2\r\n$5\r\nhello\r\n$5\r\nworld\r\n", content);
     }
 
     [Fact]
@@ -319,7 +318,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("*4\r\n$5\r\nhello:42\r\n-1\r\n$5\r\nworld", content);
+        Assert.Equal("*4\r\n$5\r\nhello\r\n:42\r\n-1\r\n$5\r\nworld\r\n", content);
     }
 
     [Fact]
@@ -333,7 +332,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("*2\r\n$5\r\nhello*2\r\n$5\r\ninner:42\r\n", content);
+        Assert.Equal("*2\r\n$5\r\nhello\r\n*2\r\n$5\r\ninner\r\n:42\r\n", content);
     }
 
     [Fact]
@@ -347,7 +346,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("*1\r\n*2\r\n$6\r\nlevel2*1\r\n$6\r\nlevel3", content);
+        Assert.Equal("*1\r\n*2\r\n$6\r\nlevel2\r\n*1\r\n$6\r\nlevel3\r\n", content);
     }
 
     [Fact]
@@ -361,7 +360,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("*3\r\n$0\r\n$5\r\nhello$0\r\n", content);
+        Assert.Equal("*3\r\n$0\r\n\r\n$5\r\nhello\r\n$0\r\n\r\n", content);
     }
 
     [Fact]
@@ -375,7 +374,7 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("*2\r\n$12\r\nHello\0World!$3\r\n\n\t\r", content);
+        Assert.Equal("*2\r\n$12\r\nHello\0World!\r\n$3\r\n\n\t\r\r\n", content);
     }
 
     [Fact]
@@ -468,7 +467,7 @@ public class WriterTests
         var expected = new StringBuilder("*100\r\n");
         foreach (var item in largeArray)
         {
-            expected.Append($"${item.Length}\r\n{item}");
+            expected.Append($"${item.Length}\r\n{item}\r\n");
         }
         Assert.Equal(expected.ToString(), content);
     }
@@ -501,6 +500,6 @@ public class WriterTests
 
         // Assert
         var content = await GetStreamContent(stream);
-        Assert.Equal("+OK\r\n:42\r\n$4\r\ntest*2\r\n$1\r\na$1\r\nb", content);
+        Assert.Equal("+OK\r\n:42\r\n$4\r\ntest\r\n*2\r\n$1\r\na\r\n$1\r\nb\r\n", content);
     }
 }
