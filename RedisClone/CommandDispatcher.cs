@@ -35,13 +35,68 @@ public class CommandDispatcher(KeyValueStore store)
             case "GET":
                 if (args.Length != 2)
                 {
-                    await Writer.ErrorAsync(s, "ERR wrong number of arugments for 'GET' command");
+                    await Writer.ErrorAsync(s, "ERR wrong number of arguments for 'GET' command");
                     break;
                 }
                 if (_store.TryGet(args[1], out var val))
                     await Writer.BulkStringAsync(s, val);
                 else
                     await Writer.BulkStringAsync(s, null);
+                break;
+            
+            case "DEL":
+                if (args.Length != 2)
+                {
+                    await Writer.ErrorAsync(s, "ERR wrong number of arguments for 'DEL' command");
+                    break;
+                }
+                await Writer.IntegerAsync(s, _store.Del([args[1]]));
+                break;
+            
+            case "SET":
+                if (args.Length != 3)
+                {
+                    await Writer.ErrorAsync(s, "ERR wrong number of arguments for 'SET' command");
+                    break;
+                }
+                _store.Set(args[1], args[2]);
+                await Writer.SimpleStringAsync(s, "OK");
+                break;
+            
+            case "EXPIRE":
+                if (args.Length != 3)
+                {
+                    await Writer.ErrorAsync(s, "ERR wrong number of arguments for 'EXPIRE' command");
+                    break;
+                }
+                await Writer.IntegerAsync(s, _store.Expire(args[1], long.Parse(args[2])));
+                break;
+            
+            case "EXISTS":
+                if (args.Length != 2)
+                {
+                    await Writer.ErrorAsync(s, "ERR wrong number of arguments for 'EXISTS' command");
+                    break;
+                }
+                await Writer.IntegerAsync(s, _store.Exists([args[1]]));
+                break;
+            
+            case "TTL":
+                if (args.Length != 2)
+                {
+                    await Writer.ErrorAsync(s, "ERR wrong number of arguments for 'TTL' command");
+                    break;
+                }
+                await Writer.IntegerAsync(s, _store.Ttl(args[1]));
+                break;
+            
+            case "PERSIST":
+                if (args.Length != 2)
+                {
+                    await Writer.ErrorAsync(s, "ERR wrong number of arguments for 'PERSIST' command");
+                    break;
+                }
+                await Writer.IntegerAsync(s, _store.Persist(args[1]));
                 break;
         }
     }
